@@ -15,7 +15,15 @@ const stats = [
 
 export function StatsBar() {
   return (
-    <section className="relative border-y border-white/5 bg-surface-50/50 backdrop-blur-sm">
+    <section className="relative border-y border-white/5 bg-surface-50/50 backdrop-blur-sm" aria-label="Protocol statistics">
+      {/* Devnet label */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-mono uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-full">
+          <span className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse" aria-hidden="true" />
+          Devnet Stats
+        </span>
+      </div>
+
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
           {stats.map((stat, i) => (
@@ -27,10 +35,10 @@ export function StatsBar() {
               transition={{ duration: 0.5, delay: i * 0.05 }}
               className="text-center"
             >
-              <p className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+              <p className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
                 {stat.value}
               </p>
-              <p className="text-xs text-zinc-500 mt-1 uppercase tracking-wider">
+              <p className="text-xs text-muted mt-1 uppercase tracking-wider">
                 {stat.label}
               </p>
             </motion.div>

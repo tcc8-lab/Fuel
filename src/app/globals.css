@@ -21,6 +21,22 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 body {
   font-family: var(--font-inter);
   background: #000000;
@@ -28,6 +44,37 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Light theme overrides */
+html.light body {
+  background: #fafafa;
+  color: #0a0a0a;
+}
+
+html.light .bg-black { background: #ffffff; }
+html.light .bg-black\/80 { background: rgba(255, 255, 255, 0.9); }
+html.light .bg-black\/95 { background: rgba(255, 255, 255, 0.95); }
+html.light .bg-surface-50 { background: #f5f5f5; }
+html.light .bg-surface-50\/50 { background: rgba(245, 245, 245, 0.5); }
+html.light .bg-surface-100 { background: #f0f0f0; }
+html.light .text-white { color: #0a0a0a; }
+html.light .text-foreground { color: #0a0a0a; }
+html.light .text-zinc-400 { color: #71717a; }
+html.light .text-zinc-500 { color: #52525b; }
+html.light .text-zinc-600 { color: #3f3f46; }
+html.light .text-zinc-700 { color: #27272a; }
+html.light .text-muted { color: #52525b; }
+html.light .border-white\/5 { border-color: rgba(0, 0, 0, 0.08); }
+html.light .border-white\/10 { border-color: rgba(0, 0, 0, 0.12); }
+html.light .bg-white\/5 { background: rgba(0, 0, 0, 0.05); }
+html.light .bg-white\/10 { background: rgba(0, 0, 0, 0.08); }
+html.light .ring-offset-black { --tw-ring-offset-color: #ffffff; }
+
+/* Semantic color classes */
+.text-foreground { color: #ffffff; }
+.text-muted { color: #a1a1aa; }
+html.light .text-foreground { color: #0a0a0a; }
+html.light .text-muted { color: #52525b; }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
@@ -38,13 +85,25 @@ body {
   background: #0a0a0a;
 }
 
+html.light ::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+
 ::-webkit-scrollbar-thumb {
   background: #222;
   border-radius: 3px;
 }
 
+html.light ::-webkit-scrollbar-thumb {
+  background: #ccc;
+}
+
 ::-webkit-scrollbar-thumb:hover {
   background: #333;
+}
+
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
 }
 
 /* Glow effects */
@@ -70,6 +129,12 @@ body {
     linear-gradient(rgba(15, 199, 142, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(15, 199, 142, 0.03) 1px, transparent 1px);
   background-size: 60px 60px;
+}
+
+html.light .bg-grid {
+  background-image:
+    linear-gradient(rgba(15, 199, 142, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 199, 142, 0.06) 1px, transparent 1px);
 }
 
 /* Noise texture overlay */
@@ -126,6 +191,30 @@ body {
   animation: gradient-flow 3s ease infinite;
 }
 
+/* Screen reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only.focus\:not-sr-only:focus {
+  position: fixed;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
 /* Wallet adapter overrides */
 .wallet-adapter-button {
   background: rgba(15, 199, 142, 0.1) !important;
@@ -143,4 +232,22 @@ body {
 .wallet-adapter-modal-wrapper {
   background: #111 !important;
   border: 1px solid #222 !important;
+}
+
+/* Loading skeleton animation */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  border-radius: 0.5rem;
+}
+
+html.light .skeleton {
+  background: linear-gradient(90deg, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.05) 75%);
+  background-size: 200% 100%;
 }

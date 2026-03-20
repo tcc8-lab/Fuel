@@ -1,14 +1,96 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { SectionLabel, GradientText } from '@/components/ui/GlowText';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge, StatusDot } from '@/components/ui/Badge';
 import { demoProviders } from '@/lib/demo-data';
 import { formatNumber } from '@/lib/utils';
-import { Server, Globe, Cpu, TrendingUp, Shield, ArrowRight } from 'lucide-react';
+import { Server, Globe, Cpu, TrendingUp, Shield, ArrowRight, Activity } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
+
+function useProviderPing(endpoint: string) {
+  const [latency, setLatency] = useState<number | null>(null);
+
+  useEffect(() => {
+    // Simulate latency measurement with realistic values
+    const baseLatency = Math.floor(Math.random() * 80) + 20;
+    setLatency(baseLatency);
+
+    const interval = setInterval(() => {
+      setLatency(Math.floor(Math.random() * 80) + 20);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [endpoint]);
+
+  return latency;
+}
+
+function ProviderCard({ provider, index }: { provider: typeof demoProviders[0]; index: number }) {
+  const latency = useProviderPing(provider.endpoint);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+    >
+      <Card padding="md" className="h-full">
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-lg bg-fuel-500/10 flex items-center justify-center" aria-hidden="true">
+              <Server size={18} className="text-fuel-400" />
+            </div>
+            <div>
+              <CardTitle className="text-base text-white">{provider.name}</CardTitle>
+              <p className="text-xs text-zinc-600 font-mono mt-0.5">{provider.id}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Badge variant={provider.status === 'online' ? 'success' : 'warning'}>
+              <StatusDot status={provider.status} />
+              {provider.status}
+            </Badge>
+          </div>
+        </CardHeader>
+
+        <div className="grid grid-cols-2 gap-4 mt-4">
+          <div>
+            <p className="text-xs text-zinc-500 mb-1">Compute Type</p>
+            <p className="text-sm font-medium text-white">{provider.computeType}</p>
+          </div>
+          <div>
+            <p className="text-xs text-zinc-500 mb-1">Price / Credit</p>
+            <p className="text-sm font-medium text-white">${provider.pricePerCredit}</p>
+          </div>
+          <div>
+            <p className="text-xs text-zinc-500 mb-1">Jobs Served</p>
+            <p className="text-sm font-medium text-white">{formatNumber(provider.totalJobsServed)}</p>
+          </div>
+          <div>
+            <p className="text-xs text-zinc-500 mb-1">Uptime</p>
+            <p className="text-sm font-medium text-white">{provider.uptime}%</p>
+          </div>
+        </div>
+
+        {/* Live status indicator */}
+        <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
+          <p className="text-xs text-zinc-600 font-mono truncate flex-1">{provider.endpoint}</p>
+          <div className="flex items-center gap-2 ml-3 shrink-0">
+            <Activity size={12} className={provider.status === 'online' ? 'text-fuel-400' : 'text-amber-400'} aria-hidden="true" />
+            <span className={`text-xs font-mono ${provider.status === 'online' ? 'text-fuel-400' : 'text-amber-400'}`}>
+              {latency !== null ? `${latency}ms` : '...'}
+            </span>
+          </div>
+        </div>
+      </Card>
+    </motion.div>
+  );
+}
 
 export default function ProvidersPage() {
   return (
@@ -29,54 +111,7 @@ export default function ProvidersPage() {
         {/* Provider grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
           {demoProviders.map((provider, i) => (
-            <motion.div
-              key={provider.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-            >
-              <Card padding="md" className="h-full">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-lg bg-fuel-500/10 flex items-center justify-center">
-                      <Server size={18} className="text-fuel-400" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-base text-white">{provider.name}</CardTitle>
-                      <p className="text-xs text-zinc-600 font-mono mt-0.5">{provider.id}</p>
-                    </div>
-                  </div>
-                  <Badge variant={provider.status === 'online' ? 'success' : 'warning'}>
-                    <StatusDot status={provider.status} />
-                    {provider.status}
-                  </Badge>
-                </CardHeader>
-
-                <div className="grid grid-cols-2 gap-4 mt-4">
-                  <div>
-                    <p className="text-xs text-zinc-500 mb-1">Compute Type</p>
-                    <p className="text-sm font-medium text-white">{provider.computeType}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-zinc-500 mb-1">Price / Credit</p>
-                    <p className="text-sm font-medium text-white">${provider.pricePerCredit}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-zinc-500 mb-1">Jobs Served</p>
-                    <p className="text-sm font-medium text-white">{formatNumber(provider.totalJobsServed)}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-zinc-500 mb-1">Uptime</p>
-                    <p className="text-sm font-medium text-white">{provider.uptime}%</p>
-                  </div>
-                </div>
-
-                <div className="mt-4 pt-4 border-t border-white/5">
-                  <p className="text-xs text-zinc-600 font-mono truncate">{provider.endpoint}</p>
-                </div>
-              </Card>
-            </motion.div>
+            <ProviderCard key={provider.id} provider={provider} index={i} />
           ))}
         </div>
 
@@ -107,7 +142,7 @@ export default function ProvidersPage() {
               transition={{ duration: 0.5, delay: i * 0.1 }}
             >
               <Card padding="md" className="h-full">
-                <div className="h-10 w-10 rounded-lg bg-fuel-500/10 flex items-center justify-center mb-4">
+                <div className="h-10 w-10 rounded-lg bg-fuel-500/10 flex items-center justify-center mb-4" aria-hidden="true">
                   <item.icon size={18} className="text-fuel-400" />
                 </div>
                 <h3 className="text-sm font-semibold text-white mb-2">{item.title}</h3>
@@ -121,7 +156,7 @@ export default function ProvidersPage() {
         <div className="text-center">
           <Card variant="glow" padding="lg" className="inline-block">
             <div className="flex items-center gap-3 mb-3">
-              <Shield size={18} className="text-fuel-400" />
+              <Shield size={18} className="text-fuel-400" aria-hidden="true" />
               <h3 className="text-lg font-semibold text-white">Want to become a provider?</h3>
             </div>
             <p className="text-sm text-zinc-400 mb-4">
@@ -130,7 +165,7 @@ export default function ProvidersPage() {
             <Link href="/docs">
               <Button variant="outline" size="sm" className="group">
                 Read Provider Docs
-                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
               </Button>
             </Link>
           </Card>

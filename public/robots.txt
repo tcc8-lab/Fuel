@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://beamish-griffin-5879b3.netlify.app/sitemap.xml

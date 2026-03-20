@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { SectionLabel, GradientText } from '@/components/ui/GlowText';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { CopyButton } from '@/components/ui/CopyButton';
 import Link from 'next/link';
 import { ArrowRight, Package, Terminal, Code2, Zap } from 'lucide-react';
 
@@ -101,7 +102,7 @@ export default function SDKPage() {
             >
               <Card padding="sm">
                 <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded bg-fuel-500/10 flex items-center justify-center">
+                  <div className="h-8 w-8 rounded bg-fuel-500/10 flex items-center justify-center" aria-hidden="true">
                     <feat.icon size={14} className="text-fuel-400" />
                   </div>
                   <div>
@@ -127,7 +128,10 @@ export default function SDKPage() {
               <div className="rounded-xl bg-surface-100 border border-white/5 overflow-hidden">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-white/5">
                   <span className="text-xs font-medium text-zinc-400">{example.title}</span>
-                  <span className="text-xs text-zinc-600 font-mono">{example.language}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-zinc-600 font-mono">{example.language}</span>
+                    <CopyButton text={example.code} />
+                  </div>
                 </div>
                 <pre className="p-5 font-mono text-sm text-zinc-300 leading-relaxed overflow-x-auto">
                   <code>{example.code}</code>
@@ -143,7 +147,7 @@ export default function SDKPage() {
             <Link href="/docs">
               <Button variant="outline" className="group">
                 Full SDK Reference
-                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
               </Button>
             </Link>
             <Link href="https://github.com/fuel-protocol/sdk">

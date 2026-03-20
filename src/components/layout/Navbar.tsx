@@ -4,21 +4,23 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Sun, Moon } from 'lucide-react';
 import { NAV_LINKS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
+import { useTheme } from '@/components/providers/ThemeProvider';
 
 export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-black/80 backdrop-blur-xl">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-black/80 dark:bg-black/80 backdrop-blur-xl" role="navigation" aria-label="Main navigation">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="relative h-8 w-8">
+          <Link href="/" className="flex items-center gap-2.5 group" aria-label="FUEL Protocol home">
+            <div className="relative h-8 w-8" aria-hidden="true">
               <div className="absolute inset-0 rounded-lg bg-fuel-500/20 group-hover:bg-fuel-500/30 transition-colors" />
               <div className="absolute inset-1 rounded-md bg-fuel-500/40 group-hover:bg-fuel-500/60 transition-colors" />
               <div className="absolute inset-2 rounded-sm bg-fuel-500 transition-colors" />
@@ -45,18 +47,30 @@ export function Navbar() {
           </div>
 
           {/* Right side */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            {/* Theme toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 text-zinc-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
+              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            >
+              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+
             <Link
               href="/dashboard"
-              className="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-fuel-500/10 text-fuel-400 border border-fuel-500/20 hover:bg-fuel-500/20 hover:border-fuel-500/30 transition-all duration-200"
+              className="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-fuel-500 text-black hover:bg-fuel-400 shadow-lg shadow-fuel-500/20 transition-all duration-200"
             >
-              Launch App
+              <span className="h-2 w-2 rounded-full bg-black/30 animate-pulse" aria-hidden="true" />
+              Try Devnet
             </Link>
 
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="md:hidden p-2 text-zinc-400 hover:text-white"
+              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mobileOpen}
             >
               {mobileOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -92,9 +106,9 @@ export function Navbar() {
               <Link
                 href="/dashboard"
                 onClick={() => setMobileOpen(false)}
-                className="block px-3 py-2.5 text-sm font-medium rounded-lg text-fuel-400 bg-fuel-500/10 border border-fuel-500/20 text-center mt-2"
+                className="block px-3 py-2.5 text-sm font-semibold rounded-lg bg-fuel-500 text-black text-center mt-2"
               >
-                Launch App
+                Try Devnet
               </Link>
             </div>
           </motion.div>
